@@ -4,6 +4,7 @@ import com.example.authorizationregistration.models.modelUser;
 import com.example.authorizationregistration.models.roleEnum;
 import com.example.authorizationregistration.repos.userRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,8 @@ import java.util.Collections;
 public class UserController {
     @Autowired
     private userRepository userRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String getReg() {
@@ -30,6 +33,7 @@ public class UserController {
         }
         user.setActive(true);
         user.setRoles(Collections.singleton(roleEnum.USER));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return "redirect:/login";
     }
